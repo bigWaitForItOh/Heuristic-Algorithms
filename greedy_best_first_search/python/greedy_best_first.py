@@ -1,5 +1,5 @@
 ###########################################################################################################################
-#A GENERIC IMPLEMENTATION OF GREEDY BEST FIRST SEARCH
+#IMPLEMENTATION OF GREEDY BEST FIRST SEARCH
 #heuristic parameter is the name of the admissible function greedy_bfs is going to call every time it requires the heuristic value from a particular node to the target node
 	#example: heuristic ('K', 'Z') = 10 if the heuristic value from node 'K' to target node 'Z' = 10
 #NOTE: heuristic (target) must return 0, since distance between target & itself is always 0
@@ -7,21 +7,26 @@
 
 from heapq import heapify, heappush, heappop;
 
-def greedy_bfs (graph, source, target, heuristic):
-	current_node = (heuristic (source, target), 0, source, [source]);
-	queue = [current_node];
+def greedy_bfs (graph, start, end, heuristic):
+	current = (0, start);
+	queue, path, backtrace, length = [current], [], {start : (None, 0)}, 0;
 
 	heapify (queue);
-	while (not current_node [2] == target):
+	while (not current [1] == end):
 		try:
-			current_node = heappop (queue);
+			current = heappop (queue);
 		except Exception as e:
 			return (-1, []);
 
-		for neighbour in graph [current_node [2]]:
-			heappush (queue, (heuristic (neighbour [0], target), current_node [1] + neighbour [1], neighbour [0], current_node [3] + [neighbour [0]]) );
+		for next_node in graph [current [1]]:
+			heappush (queue, (heuristic (next_node [0], end), next_node [0]));
+			backtrace [next_node [0]] = (current [1], next_node [1]);
 
-	return (current_node [1], current_node [3]);
+	while (not end == None):
+		length += backtrace [end] [1];
+		path, end = [end] + path, backtrace [end] [0];
+
+	return (length, path);
 
 def heuristic (current, target):
 	#this heuristic function simply assumes that the target is F, just for simplicity's sake. The heuristic values are made up, but are at most equal to the shortest path, i.e., never overestimate the cost
@@ -36,15 +41,15 @@ def heuristic (current, target):
 	return (estimates [current]);
 
 #EXAMPLE OF A GRAPH
-#REPRESENTED BY A DICTIONARY, WHERE A KEY REPRESENTS THE NODE FROM WHICH THE EDGE STARTS. A key's value is a list of Tuples. The first element of each tuple is the Node the edge reaches. The second element is the weight of the edge. The list contains 1 tuple for every neighbour the KEY has.
+#REPRESENTED BY A DICTIONARY, WHERE A KEY REPRESENTS THE NODE FROM WHICH THE EDGE STARTS. A key's value is a set of Tuples. The first element of each tuple is the Node the edge reaches. The second element is the weight of the edge. The list contains 1 tuple for every neighbour the KEY has.
 #EXAMPLE: A is connected to B with weight 2 and C with weight 3.
 graph = {
-	'A': [ ('B', 2), ('C', 3) ],
-	'B': [ ('C', 3), ('D', 5), ('E', 8) ],
-	'C': [ ('D', 6) ],
-	'D': [ ('E', 8), ('F',6) ],
-	'E': [ ('F', 6) ],
-	'F': []
+	'A': set ([ ('B', 2), ('C', 3) ]),
+	'B': set ([ ('C', 3), ('D', 5), ('E', 8) ]),
+	'C': set ([ ('D', 6) ]),
+	'D': set ([ ('E', 8), ('F',6) ]),
+	'E': set ([ ('F', 6) ]),
+	'F': set ([])
 };
 
 print (greedy_bfs (graph, 'A', 'F', heuristic));
