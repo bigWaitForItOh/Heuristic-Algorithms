@@ -9,7 +9,7 @@ from heapq import heapify, heappush, heappop;
 
 def a_star (graph, start, end, heuristic):
 	current = (heuristic (start, end), start);
-	queue, path, length, parent = [current], [], 0, {};
+	queue, path, length, backtrace = [current], [], 0, {};
 
 	heapify (queue);
 	while (not current [1] == end):
@@ -19,12 +19,12 @@ def a_star (graph, start, end, heuristic):
 			return ( (-1, []) );
 
 		for node in graph [current [1]]:
-			parent [node [0]] = (current [1], node [1]);
+			backtrace [node [0]] = (current [1], node [1]);
 			heappush (queue, (current [0] + node [1] + heuristic (node [0], end) - heuristic (current [1], end), node [0]));
 
 	while (not end == start):
 		path = [end] + path;
-		end, length = parent [end] [0], length + parent [end] [1];
+		end, length = backtrace [end] [0], length + backtrace [end] [1];
 	path = [start] + path;
 
 	return ( (length, path) );
