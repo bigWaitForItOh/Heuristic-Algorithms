@@ -9,7 +9,7 @@ from heapq import heapify, heappush, heappop;
 
 def greedy_bfs (graph, start, end, heuristic):
 	current = (heuristic (start, end), start);
-	length, path, backtrace, queue = 0, [], {}, [current];
+	length, path, backtrace, queue = 0, [], {start : (None, 0)}, [current];
 
 	heapify (queue);
 	while (not current [1] == end):
@@ -22,10 +22,9 @@ def greedy_bfs (graph, start, end, heuristic):
 			backtrace [node [0]] = (current [1], node [1]);
 			heappush (queue, (heuristic (node [0], end), node [0]));
 
-	while (not end == start):
+	while (end):
 		path = [end] + path;
 		end, length = backtrace [end] [0], length + backtrace [end] [1];
-	path = [start] + path;
 
 	return (length, path);
 
