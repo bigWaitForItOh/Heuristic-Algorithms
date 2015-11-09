@@ -1,5 +1,5 @@
 ###########################################################################################################################
-#IMPLEMENTATION OF A* SEARCH on a weighted, directed graph.
+#IMPLEMENTATION OF Greedy Best First Search on a weighted, directed graph.
 #heuristic parameter is the name of the admissible function a_star is going to call every time it requires the heuristic value from a particular node to the target node
 	#example: heuristic ('K', 'Z') = 10 if the heuristic value from node 'K' to target node 'Z' = 10
 #NOTE: heuristic (target) must return 0, since distance between target & itself is always 0
